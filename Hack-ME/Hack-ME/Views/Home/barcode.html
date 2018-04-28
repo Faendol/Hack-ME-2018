@@ -1,10 +1,21 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
 		<style>
 			body {
 				padding: 0;
 				margin: 0;
+			}
+
+			* {
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			h3 {
+				text-align: center;
+				font-size: 200%;
 			}
 
 			#center {
@@ -14,58 +25,174 @@
 				transform: translate(-50%, -50%);
 			}
 
-			#camera_viewer {
-				width: 50vh;
-				height: 50vh;
+			#camera_wrapper {
+				position: relative;
+				width: 60vh;
+				height: 60vh;
+				max-width: 60vw;
+				max-height: 60vw;
 				overflow: hidden;
+				border-radius: 4vh;
+				box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.5);
+			}
+
+			#camera_viewer {
+				width: 100%;
+				height: 100%;
 				display: block;
 				object-fit: cover;
+				transition: opacity 0.5s;
+			}
+
+			#camera_fade {
+				background-color: rgba(0, 0, 0, 0.2);
+				position: absolute;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				transition: opacity 0.2s;
+			}
+
+			.camera_buttons {
+				position: absolute;
+				width: 50%;
+				height: 50%;
+				top: 0;
+				left: 0;
+				padding: 25%;
+				transition: opacity 0.2s;
+				cursor: pointer;
+			}
+
+			.camera_buttons svg {
+				fill: rgba(255, 255, 255, 0.4);
+				transition: fill 0.4s;
+			}
+
+			#camera_wrapper:hover svg {
+				fill: rgba(255, 255, 255, 0.6);
+			}
+
+			.hide {
+				pointer-events: none;
+				opacity: 0;
+			}
+
+			@keyframes cycle-bg {
+				0%, 100% { background-color: #EF9A9A; }
+				17% { background-color: #FFF59D; }
+				33% { background-color: #C5E1A5; }
+				50% { background-color: #80DEEA; }
+				67% { background-color: #9FA8DA; }
+				83% { background-color: #CE93D8; }
 			}
 		</style>
 	</head>
 
         <body>
 		<div id="center">
-			<video id="camera_viewer"></video>
-			<h3 id="location"></h3>
+			<div id="camera_wrapper">
+				<video id="camera_viewer" class="hide">No video</video>
+				<div id="camera_fade"></div>
+				<div id="scan_new" class="camera_buttons hide">
+					<svg viewBox="0 0 24 24">
+						<path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+	    					<path d="M0 0h24v24H0z" fill="none"/>
+					</svg>
+				</div>
+				<div id="allow_camera" class="camera_buttons hide">
+					<svg viewBox="0 0 24 24">
+    						<circle cx="12" cy="12" r="3.2"/>
+    						<path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+    						<path d="M0 0h24v24H0z" fill="none"/>
+					</svg>
+				</div>
+			</div>
+			<h3 id="location">Scan a room code</h3>
 		</div>
         </body>
         
         <script src="jsQR.js"></script>
         <script>
+		var camera_stream, camera_viewer;
+		camera_viewer = document.getElementById("camera_viewer");
+		document.body.style.animation = `cycle-bg 20s linear ${Math.random()*-10}s infinite`;
+
                 get_camera();
 		function get_camera() {
 			navigator.mediaDevices.getUserMedia({ video: true })
 			.then((stream) => {
-				let camera_viewer = document.getElementById("camera_viewer");
+				camera_viewer.addEventListener("playing", () => {
+					document.getElementById("camera_fade").classList.add("hide");
+					camera_viewer.classList.remove("hide");
+					camera_viewer.removeEventListener("playing", this);
+				});
 			
-				camera_viewer.srcObject = stream;
+				camera_stream = stream;
+
+				camera_viewer.srcObject = camera_stream;
 				camera_viewer.play();
 
-				scan_for_codes(stream, camera_viewer);
+				scan_for_codes();
 		    	})
 			.catch((error) => {
-				console.error(error);
+				switch (error.name) {
+					case "NotAllowedError":
+						if (confirm("You must allow camera access to scan a qr code."))
+							get_camera();
+						else
+                                        		document.getElementById("allow_camera").classList.remove("hide");
+						break
+					default:
+                                        	document.getElementById("allow_camera").classList.remove("hide");
+						alert(error);
+						break;
+				}
 			});
 		}
 
-		function scan_for_codes(stream, video) {
-			let width = stream.getVideoTracks()[0].getSettings().width;
-			let height = stream.getVideoTracks()[0].getSettings().height;
-
+		function scan_for_codes() {
 			let frame = document.createElement("canvas");
-			frame.width = width;
-			frame.height = height;
+			frame.width = camera_stream.getVideoTracks()[0].getSettings().width;
+			frame.height = camera_stream.getVideoTracks()[0].getSettings().height;
+
 			let frame_ctx = frame.getContext("2d");
 
-			setInterval(() => {
-				frame_ctx.drawImage(video, 0, 0);
+			let qr_checker = setInterval(() => {
+				frame_ctx.drawImage(camera_viewer, 0, 0);
 
-				let code = jsQR(frame_ctx.getImageData(0, 0, width, height).data, width, height);
-				if (code)
-					document.getElementById("location").innerHTML = code.data;
+				let code = jsQR(frame_ctx.getImageData(0, 0, frame.width, frame.height).data, frame.width, frame.height);
+
+				if (code) {
+					if (code.data) {
+						deal_with_code(code.data.slice(0, 32));
+						clearInterval(qr_checker);
+						camera_viewer.pause();
+					}
+				}
 			}, 50);
 		}
-				
+
+		function deal_with_code(data) {
+			document.getElementById("location").innerHTML = "Room: " +data;
+
+			document.getElementById("camera_fade").classList.remove("hide");
+			document.getElementById("scan_new").classList.remove("hide");
+		}
+
+		document.getElementById("scan_new").addEventListener("click", (e) => {
+			camera_viewer.play();
+			scan_for_codes();
+
+			document.getElementById("location").innerHTML = "Scan a room code";
+			document.getElementById("camera_fade").classList.add("hide");
+			document.getElementById("scan_new").classList.add("hide");
+		});
+
+		document.getElementById("allow_camera").addEventListener("click", (e) => {
+			get_camera();
+			document.getElementById("allow_camera").classList.add("hide");
+		});
         </script>
 </html>
