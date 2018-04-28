@@ -10,22 +10,16 @@ namespace Hack_ME.Controllers
 {
     public class HomeController : Controller
     {
+        public HomeController(AccountController)
+        {
+
+        }
+
         public IActionResult Index()
         {
-            return View();
-        }
+            if (User.Identity.IsAuthenticated) {
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
+            }
             return View();
         }
 

@@ -31,6 +31,7 @@ namespace Hack_ME.Controllers
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            ApplicationDbContext dbContext,
             IEmailSender emailSender,
             ILogger<AccountController> logger)
         {
@@ -38,6 +39,7 @@ namespace Hack_ME.Controllers
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
+            _DbContext = dbContext;
         }
 
         [TempData]
