@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+		<style>
+			html,body {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%:
+			}
+
+			* {
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			@keyframes cycle-bg {
+				0%, 100% { background-color: #EF9A9A; }
+				20% { background-color: #C5E1A5; }
+				40% { background-color: #80DEEA; }
+				60% { background-color: #9FA8DA; }
+				80% { background-color: #CE93D8; }
+			}
+
+			#center_wrapper {
+				width: 70%;
+				margin: 60px auto;
+				background-color: rgba(255, 255, 255, 0.3);
+				padding: 20px;
+				border-radius: 5px;
+				box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.1);
+			}
+
+			#students {
+				width: 100%;
+				margin: 50px 0;
+			}
+
+			#add-student {
+				text-align: center;
+				margin: 50px auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="center_wrapper">
+			<table id="students" class="table">
+				<tr>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Location</th>
+				</tr>
+			</table>
+			<form id="add-student" class="form-inline">
+				<input type="text" id="add-student-text" class="form-control" placeholder="Student Email"></input>
+				<input type="submit" id="add-student-btn" class="btn-default" value="Add Student"></input>
+			</form>
+		</div>
+	</body>
+	<script>
+		document.body.style.animation = `cycle-bg 20s linear ${Math.random()*-20}s infinite`;
+
+		document.getElementById("add-student").addEventListener("submit", (e) => {
+			e.preventDefault();
+		});
+	</script>
+</html>
