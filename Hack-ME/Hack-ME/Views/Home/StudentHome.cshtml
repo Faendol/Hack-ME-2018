@@ -87,7 +87,13 @@
         }
 
         function deal_with_code(data) {
-            document.getElementById("location").innerHTML = "Room: " + data;
+            $.ajax({
+                url: "/Api/checkRoom/" + data,
+                type: "POST",
+                success: function (dataz) {
+                    document.getElementById("location").innerHTML = dataz;
+                }
+            });
 
             document.getElementById("camera_fade").classList.remove("hide");
             document.getElementById("scan_new").classList.remove("hide");

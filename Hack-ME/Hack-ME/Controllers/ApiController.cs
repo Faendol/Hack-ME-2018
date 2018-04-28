@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Hack_ME.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/Api")]
     public class ApiController : Controller
     {
         private readonly ApplicationDbContext _DB;
@@ -23,13 +21,20 @@ namespace Hack_ME.Controllers
             _DB = db;
         }
 
-        [HttpPost]
-        public async Task<string> CheckRoom(int roomID)
+        [HttpGet]
+        public string Check()
         {
-            var location = _DB._locations.First(e => e.LocationID == roomID);
+            return "Good!";
+        }
+
+        [HttpPost]
+        public async Task<string> checkRoom(int id)
+        {
+            var location = _DB._locations.First(e => e.LocationID == id);
             if (location != null) {
                 var poison = await _userManager.GetUserAsync(User);
-                _DB._students.First(e => e.StudentID == poison.studentID).LocationID = location.LocationID;
+                var studentFor = _DB._students.Where(e => e.StudentID == poison.studentID.Value + Int32.MinValue);
+                studentFor.First().LocationID = location.LocationID;
                 _DB.SaveChanges();
 
                 return "Room: " + location.LocationName;
