@@ -17,11 +17,15 @@
 
 			@keyframes cycle-bg {
 				0%, 100% { background-color: #EF9A9A; }
-				17% { background-color: #FFF59D; }
-				33% { background-color: #C5E1A5; }
-				50% { background-color: #80DEEA; }
-				67% { background-color: #9FA8DA; }
-				83% { background-color: #CE93D8; }
+				20% { background-color: #C5E1A5; }
+				40% { background-color: #80DEEA; }
+				60% { background-color: #9FA8DA; }
+				80% { background-color: #CE93D8; }
+			}
+
+			h1,#creators {
+				color: #fff;
+				text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 			}
 
 			#hackme-logo {
@@ -32,10 +36,35 @@
 				width: 200px;
 				height: 200px;
 			}
+
+			#center_wrapper {
+				position: absolute;
+				top: 40%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+			}
+
+			.center-button {
+				display: block;
+				margin: 30px auto;
+			}
+
+			#creators {
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				margin: 20px;
+			}
 		</style>
 	</head>
 	<body>
 		<img id="hackme-logo" src="hackme.png"></img>
+		<div id="center_wrapper">
+			<h1 id="name">QR Attendance</h1>
+			<button id="sign" class="btn-default center-button">Sign in</button>
+			<button id="register" class="btn-default center-button">Register</button>
+		</div>
+		<p id="creators">By Liam Jacquet, Wade Wahlig, and Ryan Britton</p>
 	</body>
 	<script>
 		document.body.style.animation = `cycle-bg 20s linear ${Math.random()*-20}s infinite`;
