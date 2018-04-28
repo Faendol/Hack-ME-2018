@@ -33,7 +33,7 @@ namespace Hack_ME.Controllers
             var location = _DB._locations.First(e => e.LocationID == id);
             if (location != null) {
                 var poison = await _userManager.GetUserAsync(User);
-                var studentFor = _DB._students.Where(e => e.StudentID == poison.studentID.Value + Int32.MinValue);
+                var studentFor = _DB._students.Where(e => e.StudentID == poison.studentID.Value);
                 studentFor.First().LocationID = location.LocationID;
                 _DB.SaveChanges();
 
