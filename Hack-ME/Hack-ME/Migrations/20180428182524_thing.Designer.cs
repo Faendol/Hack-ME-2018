@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Hack_ME.Data.Migrations
+namespace HackME.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180428150531_first")]
-    partial class first
+    [Migration("20180428182524_thing")]
+    partial class thing
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasKey("GroupID");
 
-                    b.ToTable("Group");
+                    b.ToTable("_groups");
                 });
 
             modelBuilder.Entity("Hack_ME.Data.Location", b =>
@@ -42,7 +42,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasKey("LocationID");
 
-                    b.ToTable("Location");
+                    b.ToTable("_locations");
                 });
 
             modelBuilder.Entity("Hack_ME.Data.Student", b =>
@@ -58,7 +58,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasIndex("LocationID");
 
-                    b.ToTable("Student");
+                    b.ToTable("_students");
                 });
 
             modelBuilder.Entity("Hack_ME.Data.StudentGroup", b =>
@@ -71,7 +71,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("StudentGroup");
+                    b.ToTable("studentGroups");
                 });
 
             modelBuilder.Entity("Hack_ME.Data.Teacher", b =>
@@ -83,7 +83,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasKey("TeacherID");
 
-                    b.ToTable("Teacher");
+                    b.ToTable("_teachers");
                 });
 
             modelBuilder.Entity("Hack_ME.Data.TeacherGroup", b =>
@@ -96,7 +96,7 @@ namespace Hack_ME.Data.Migrations
 
                     b.HasIndex("GroupID");
 
-                    b.ToTable("TeacherGroup");
+                    b.ToTable("teacherGroups");
                 });
 
             modelBuilder.Entity("Hack_ME.Models.ApplicationUser", b =>
@@ -136,6 +136,10 @@ namespace Hack_ME.Data.Migrations
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
+
+                    b.Property<int?>("studentID");
+
+                    b.Property<int?>("teacherID");
 
                     b.HasKey("Id");
 

@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Hack_ME.Data.Migrations
+namespace HackME.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20180428165330_thing")]
-    partial class thing
+    [Migration("20180428182141_notNULL")]
+    partial class notNULL
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -137,9 +137,9 @@ namespace Hack_ME.Data.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256);
 
-                    b.Property<int?>("studentID");
+                    b.Property<int>("studentID");
 
-                    b.Property<int?>("teacherID");
+                    b.Property<int>("teacherID");
 
                     b.HasKey("Id");
 
