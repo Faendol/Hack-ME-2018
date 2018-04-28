@@ -13,6 +13,8 @@ using Microsoft.Extensions.Options;
 using Hack_ME.Models;
 using Hack_ME.Models.AccountViewModels;
 using Hack_ME.Services;
+using Microsoft.EntityFrameworkCore;
+using Hack_ME.Data;
 
 namespace Hack_ME.Controllers
 {
@@ -22,6 +24,7 @@ namespace Hack_ME.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _DbContext;
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
 
@@ -247,7 +250,7 @@ namespace Hack_ME.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return Redirect("https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://hackmeqr.azurewebsites.net/");
         }
 
         [HttpPost]
@@ -310,7 +313,24 @@ namespace Hack_ME.Controllers
                 {
                     throw new ApplicationException("Error loading external login information during confirmation.");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                int teacherId = 0;
+                int studentId = 0;
+
+                if (model.TeacherorStudent == 0) {
+                    var student = new Student() { StudentName = model.Name };
+                    _DbContext._students.Add(student);
+                    studentId = student.StudentID;
+                }
+                else {
+                    var teacher = new Teacher() { TeacherName = model.Name };
+                    _DbContext._teachers.Add(teacher);
+                    teacherId = teacher.TeacherID;
+                }
+
+                _DbContext.SaveChanges();
+
+                var user = new ApplicationUser { UserName = model.Name, Email = model.Email, teacherID = teacherId, studentID = studentId };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

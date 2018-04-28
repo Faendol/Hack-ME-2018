@@ -9,7 +9,11 @@ namespace Hack_ME.Models.AccountViewModels
     public class ExternalLoginViewModel
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string Name { get; set; }
+
+        [Required]
+        public int TeacherorStudent { get; set; }
+
+        public string Email { get; internal set; }
     }
 }

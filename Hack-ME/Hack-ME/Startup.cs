@@ -33,6 +33,11 @@ namespace Hack_ME
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            services.AddAuthentication().AddGoogle(googleoptions => {
+                googleoptions.ClientId = "674338343020-lllqgdc05q6u7p20g75rsbp1ogjb3sgv.apps.googleusercontent.com";
+                googleoptions.ClientSecret = "jCPCInqS32-1nDju8Gzd0kuv";
+            });
+
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
