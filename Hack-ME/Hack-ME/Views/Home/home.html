@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+		<style>
+			html,body {
+				padding: 0;
+				margin: 0;
+				height: 100%;
+				width: 100%:
+			}
+
+			* {
+				font-family: 'Open Sans', sans-serif;
+			}
+
+			@keyframes cycle-bg {
+				0%, 100% { background-color: #EF9A9A; }
+				17% { background-color: #FFF59D; }
+				33% { background-color: #C5E1A5; }
+				50% { background-color: #80DEEA; }
+				67% { background-color: #9FA8DA; }
+				83% { background-color: #CE93D8; }
+			}
+
+			#hackme-logo {
+				position: absolute;
+				top: 0;
+				right: 0;
+				display: block;
+				width: 200px;
+				height: 200px;
+			}
+		</style>
+	</head>
+	<body>
+		<img id="hackme-logo" src="hackme.png"></img>
+	</body>
+	<script>
+		document.body.style.animation = `cycle-bg 20s linear ${Math.random()*-20}s infinite`;
+	</script>
+</html>
